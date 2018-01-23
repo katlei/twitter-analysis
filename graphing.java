@@ -40,8 +40,10 @@ public class Graph {
 			for(int j=0;j<doubleArray[i];j++){
 				lines+="|";
 			}
-			if(letterFreqArray[i]!=0){
+			if(letterFreqArray[i]!=0 && lines.length()!=0){
 				System.out.println(myChar +" "+ lines+" ("+letterFreqArray[i]+")");
+			}else if(lines.length()==0){
+				System.out.println(myChar + " ("+letterFreqArray[i]+")");
 			}else{
 				System.out.println(myChar +" (0)");
 			}
@@ -60,6 +62,6 @@ public class Graph {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		graph(read("textFile.txt"));
+		graph(read("tweets.txt"));
 	}
 }
