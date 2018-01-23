@@ -12,18 +12,22 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.conf.*;
 
+import java.io.*;
 import java.util.*;
 import twitter4j.*;
 import twitter4j.conf.*;
 //import a.*;
-public class Analyze {
-	public static String tweetToString(String user){
+public class GetTweets {
+	public static void tweetToString(String user) throws IOException{
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setOAuthConsumerKey("UrpEUlYGr9U51gh0yJHncow1m");
 		cb.setOAuthConsumerSecret("h3SHtLHPEfKAOxsJe8BIyXWQji4FvIAGFU9HYfxezGtcLAjvLb");
 		cb.setOAuthAccessToken("2453584556-riqTZCwIpFa0Hf1mA3bNNYcFqmG7Bv3Co1zebLJ");
 		cb.setOAuthAccessTokenSecret("BUmz9RAMfVFHb5jSAhGX18R1DfO4ogIq6YR2zPtvNnNBi");
 
+		File newFile = new File("tweets.txt");
+		BufferedWriter writer = new BufferedWriter(new FileWriter("tweets.txt"));
+		
 		Twitter twitter = new TwitterFactory(cb.build()).getInstance();
 
 		int pageno = 1;
@@ -39,6 +43,7 @@ public class Analyze {
 				break;
 		      }
 			catch(TwitterException e) {
+
 				e.printStackTrace();
 			}
 		}
@@ -46,7 +51,6 @@ public class Analyze {
 		    
 		String fullStr;
 		String str;
-		String total = "";
 		int link;
 		int retweet;
 		int colon;
@@ -69,12 +73,13 @@ public class Analyze {
 			if(retweet != -1 && colon != -1){
 				str = str.substring(colon+1);
 			}
-			total += str;
+			
+			writer.write(str);
 		}
-		    
-		return total;
+		writer.close();
 	}
-	public static void main(String[] args){
-		System.out.println(tweetToString("realDonaldTrump"));
+	
+	public static void main(String[] args) throws IOException{
+		tweetToString("realDonaldTrump");
 	}	
 }
