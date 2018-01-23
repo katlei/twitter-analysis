@@ -17,75 +17,64 @@ import twitter4j.*;
 import twitter4j.conf.*;
 //import a.*;
 public class Analyze {
-	public static void main(String[] args){
-
-		    ConfigurationBuilder cb = new ConfigurationBuilder();
-		    cb.setOAuthConsumerKey("YOUR KEYS HERE");
-		    cb.setOAuthConsumerSecret("YOUR KEYS HERE");
-		    cb.setOAuthAccessToken("YOUR KEYS HERE");
-		    cb.setOAuthAccessTokenSecret("YOUR KEYS HERE");
-
-		    Twitter twitter = new TwitterFactory(cb.build()).getInstance();
-
-		    int pageno = 1;
-		    String user = "cnn";
-		    List statuses = new ArrayList();
-
-		    while (true) {
-
-		      try {
-
-		        int size = statuses.size(); 
-		        Paging page = new Paging(pageno++, 100);
-		        statuses.addAll(twitter.getUserTimeline(user, page));
-		        if (statuses.size() == size)
-		          break;
-		      }
-		      catch(TwitterException e) {
-
-		        e.printStackTrace();
-		      }
-		    }
-
-		    System.out.println("Total: "+statuses.size());
-		}
-		
-		/**
-	    Twitter twitter = new TwitterFactory().getInstance();
-        try {
-            List<twitter4j.Status> statuses;
-            String user;
-            if (args.length == 1) {
-                user = args[0];
-                statuses = twitter.getUserTimeline(user);
-            } else {
-                user = twitter.verifyCredentials().getScreenName();
-                statuses = twitter.getUserTimeline();
-            }
-            System.out.println("Showing @" + user + "'s user timeline.");
-            for (twitter4j.Status status : statuses) {
-                System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
-            }
-        } catch (TwitterException te) {
-            te.printStackTrace();
-            System.out.println("Failed to get timeline: " + te.getMessage());
-            System.exit(-1);
-        }
-		
+	public static String tweetToString(String user){
 		ConfigurationBuilder cb = new ConfigurationBuilder();
-		
-		cb.setDebugEnabled(true)
-		  .setOAuthConsumerKey("*********************")
-		  .setOAuthConsumerSecret("******************************************")
-		  .setOAuthAccessToken("**************************************************")
-		  .setOAuthAccessTokenSecret("******************************************");
-	
-		TwitterFactory tf = new TwitterFactory(cb.build());
-		Twitter twitter = tf.getInstance();
-		**/
-	
+		cb.setOAuthConsumerKey("UrpEUlYGr9U51gh0yJHncow1m");
+		cb.setOAuthConsumerSecret("h3SHtLHPEfKAOxsJe8BIyXWQji4FvIAGFU9HYfxezGtcLAjvLb");
+		cb.setOAuthAccessToken("2453584556-riqTZCwIpFa0Hf1mA3bNNYcFqmG7Bv3Co1zebLJ");
+		cb.setOAuthAccessTokenSecret("BUmz9RAMfVFHb5jSAhGX18R1DfO4ogIq6YR2zPtvNnNBi");
+
+		Twitter twitter = new TwitterFactory(cb.build()).getInstance();
+
+		int pageno = 1;
+		List statuses = new ArrayList();
+		int size;
+		while (true) {
+
+		try {
+			size = statuses.size(); 
+			Paging page = new Paging(pageno++, 100);
+			statuses.addAll(twitter.getUserTimeline(user, page));
+			if (statuses.size() > 50)
+				break;
+		      }
+			catch(TwitterException e) {
+				e.printStackTrace();
+			}
+		}
+		size = statuses.size();
+		    
+		String fullStr;
+		String str;
+		String total = "";
+		int link;
+		int retweet;
+		int colon;
+		for(int i = 0; i < size; i++){
+			fullStr = statuses.get(i).toString();
+			List<String> items = Arrays.asList(fullStr.split("\\s*,\\s*"));
+			str = items.get(2);
+			
+			if(str.substring(0,5).equals("text="))
+				str = str.substring(6);
+			
+			link = str.indexOf("https");
+			
+			if(link != -1){
+				str = str.substring(0,link);
+			}
+			
+			retweet = str.indexOf("RT @");
+			colon = str.indexOf(":");
+			if(retweet != -1 && colon != -1){
+				str = str.substring(colon+1);
+			}
+			total += str;
+		}
+		    
+		return total;
+	}
+	public static void main(String[] args){
+		System.out.println(tweetToString("realDonaldTrump"));
+	}	
 }
-
-
-
-
